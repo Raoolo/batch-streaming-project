@@ -5,7 +5,7 @@ pl.Config.set_tbl_cols(11)   # Default is 8 columns, show more for better unders
 
 # Path setup, ensuring the dataset is in the correct location
 print("Loadiong dataset...")
-file_path = os.path.join(os.path.dirname(__file__), '..', 'dataset', 'synthetic_financial_data.csv')
+file_path = os.path.join(os.path.dirname(__file__), 'dataset', 'synthetic_financial_data.csv')
 file_path = os.path.abspath(file_path)
 df = pl.read_csv(file_path)
 

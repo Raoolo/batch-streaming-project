@@ -1,2 +1,4 @@
-dataset/
+stream_simulator/dataset/
 .venv/
+stream_simulator/.env
+stream_simulator/checkpoint.txt
