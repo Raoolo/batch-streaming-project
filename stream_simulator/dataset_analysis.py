@@ -1,53 +1,43 @@
 import polars as pl
 import os
 
+pl.Config.set_tbl_cols(11)   # Default is 8 columns, show more for better understanding
+
 # Path setup, ensuring the dataset is in the correct location
+print("Loadiong dataset...")
 file_path = os.path.join(os.path.dirname(__file__), '..', 'dataset', 'synthetic_financial_data.csv')
 file_path = os.path.abspath(file_path)
 df = pl.read_csv(file_path)
 
-# Inspect structure
-print("Shape:", df.shape)
-print("Column names & dtypes:\n", df.dtypes)
-print("\nSample rows:\n", df.head())
+# Structure and basic info
+print(f"Shape: {df.shape}")
+print(f"Column names & data types:\n{df.columns}\n{df.dtypes}")
+df = df.rename({'oldbalanceOrg': 'oldbalanceOrig'})
+print(f"\nSample rows:\n {df.head(5)}")
 
 # Null/missing value check
-nulls = df.null_count()
-print("\nNull values per column:\n", nulls)
+print(f"\nNull values per column:\n{df.null_count()}")
 
-# Distribution: amount, type, isFraud
-print("\nTransaction types:\n", df['type'].value_counts())
-print("\nIsFraud counts:\n", df['isFraud'].value_counts())
-print("\nAmount stats:\n", df['amount'].describe())
-
-# Class imbalance
+# Fraud and flag counts
+print(f"\nIsFraud counts:\n{df['isFraud'].value_counts()}")
+print(f"\nIsFlaggedFraud counts:\n{df['isFlaggedFraud'].value_counts()}") 
 fraud_ratio = df['isFraud'].mean()
 print(f"\nFraud ratio: {fraud_ratio:.4f} ({float(fraud_ratio)*100:.2f}%)")
+flagged_fraud_ratio = df['isFlaggedFraud'].mean()
+print(f"\nFlagged fraud ratio: {flagged_fraud_ratio:.4f} ({float(flagged_fraud_ratio)*100:.2f}%)")
 
-# Balance changes
-df = df.with_columns([
-    (pl.col('newbalanceOrig') - pl.col('oldbalanceOrg')).alias('deltaOrig'),
-    (pl.col('newbalanceDest') - pl.col('oldbalanceDest')).alias('deltaDest')
-])
-print("\nBalance delta (origin):\n", df['deltaOrig'].describe())
-print("\nBalance delta (dest):\n", df['deltaDest'].describe())
-
-# Time-based patterns
+# Fraud rate by step
 if 'step' in df.columns:
-    print("\nStep (time) range:", df['step'].min(), "to", df['step'].max())
+    print(f"\nStep (time) range: {df['step'].min()} to {df['step'].max()}")
     fraud_by_time = (
     df.group_by('step')
       .agg(pl.col('isFraud').mean().alias('fraud_rate'))
       .sort('step')
     )
-    print("\nFraud rate by step (sample):\n", fraud_by_time.head(10))
+    print(f"\nSample of fraud rate by step:\n{fraud_by_time.head(10)}")
 
-# Feature Engineering Suggestions
-print("\nFeature Engineering Suggestions:")
-print("- Transaction type (categorical: one-hot or embedding)")
-print("- Log(amount + 1) (to reduce skew)")
-print("- Balance change: deltaOrig, deltaDest, and ratios to amount")
-print("- Frequency or sum of transactions per user in recent windows (needs aggregation)")
-print("- Time features: hour, day, periodic patterns if available")
-print("- Flags for impossible/negative balances")
-print("- User history: previous fraud, amounts, types, etc.")
+# Balance changes for origin and destination
+df = df.with_columns([
+    (pl.col('newbalanceOrig') - pl.col('oldbalanceOrig')).alias('deltaOrig'),
+    (pl.col('newbalanceDest') - pl.col('oldbalanceDest')).alias('deltaDest')
+])
