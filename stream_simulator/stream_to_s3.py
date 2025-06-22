@@ -41,6 +41,8 @@ def main():
     # initialization
     logger.info("Starting the streaming simulator...")
     logger.info(f"Using S3 bucket: {BUCKET}, batch size: {BATCH_SIZE}, interval: {INTERVAL} seconds")
+
+    # create S3 client and read CSV file
     s3 = boto3.client("s3")
     df = pl.read_csv(CSV_PATH)
     total_rows = len(df)

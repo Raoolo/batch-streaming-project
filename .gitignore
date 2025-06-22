@@ -1,5 +1,13 @@
+#folders
 stream_simulator/dataset/
+stream_simulator/__pycache__
+tests/__pycache__
 .venv/
 .env/
+
+
+
+# files
 stream_simulator/checkpoint.txt
 docker/Dockerfile_with_comments.txt
+Step-by-step-plan-batch-streaming.pdf
