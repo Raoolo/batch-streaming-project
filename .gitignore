@@ -4,7 +4,9 @@ stream_simulator/__pycache__
 tests/__pycache__
 .venv/
 .env/
-
+airflow/config
+airflow/logs
+airflow/plugins
 
 
 # files
