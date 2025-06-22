@@ -1,5 +1,5 @@
 stream_simulator/dataset/
 .venv/
-stream_simulator/.env
+.env/
 stream_simulator/checkpoint.txt
 docker/Dockerfile_with_comments.txt

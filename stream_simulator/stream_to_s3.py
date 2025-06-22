@@ -6,7 +6,7 @@ import polars as pl
 from datetime import datetime, timezone
 from dotenv import load_dotenv
 
-load_dotenv()   # load environment variables from .env file
+load_dotenv(dotenv_path='.env/.env')   # load environment variables from .env file
 
 # load config from environment variables
 INTERVAL = float(os.environ.get("STREAM_INTERVAL", 1.0))  # seconds
@@ -40,6 +40,7 @@ def save_checkpoint(idx):
 def main():
     # initialization
     logger.info("Starting the streaming simulator...")
+    logger.info(f"Using S3 bucket: {BUCKET}, batch size: {BATCH_SIZE}, interval: {INTERVAL} seconds")
     s3 = boto3.client("s3")
     df = pl.read_csv(CSV_PATH)
     total_rows = len(df)
