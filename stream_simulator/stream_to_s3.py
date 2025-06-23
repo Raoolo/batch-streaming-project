@@ -52,13 +52,13 @@ def main():
 
     while idx < total_rows:
         now = datetime.now(timezone.utc)
-        partition = f"raw/{now:%Y-%m-%d/%H}/"    # partition path based on current time (year-month-day/hour)
+        partition = f"raw/{now:%Y/%m/%d/%H}/"    # partition path based on current time (year-month-day/hour)
         batch = df[idx:idx+BATCH_SIZE]     # get the next batch of rows
         if batch.is_empty():
             break
 
         # objects for S3
-        file_name = f"{partition}data_{now:%M:%S}.csv"     # file name with current minute and second
+        file_name = f"{partition}min:{now:%M}_sec:{now:%S}.csv"     # file name with current minute and second
         data = batch.write_csv()
 
         # the key for the S3 object is the partition path + file name, it's the path
