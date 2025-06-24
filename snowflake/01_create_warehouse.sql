@@ -1,0 +1,5 @@
+-- Create a Snowflake warehouse for ETL processes
+CREATE WAREHOUSE IF NOT EXISTS ETL_WH
+  WITH WAREHOUSE_SIZE = 'XSMALL'
+   AUTO_SUSPEND = 60
+   AUTO_RESUME = TRUE;

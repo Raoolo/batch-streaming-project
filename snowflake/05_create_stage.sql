@@ -1,0 +1,9 @@
+USE DATABASE STREAMING_DB;
+
+CREATE OR REPLACE STAGE RAW_STAGE
+  URL = 's3://synthetic-financial-data-batch-streaming/raw/'
+  STORAGE_INTEGRATION = my_s3_int
+  FILE_FORMAT = (FORMAT_NAME = 'CSV_FORMAT');
+
+
+LIST @RAW_STAGE;

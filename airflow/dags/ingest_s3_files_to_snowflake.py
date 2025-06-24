@@ -6,12 +6,21 @@ import boto3
 import logging
 import pendulum
 
-# get values from airflow variables
+# airflow variables for S3 configuration
 s3_bucket = Variable.get("S3_BUCKET", default="ssynthetic-financial-data-batch-streaming")
 s3_prefix_raw = Variable.get("S3_PREFIX", default="rraw/")
 s3_prefix_processed = "processed/"
 s3_conn_id = "aws"
-scheduled_interval = 5  # every 2 minutes
+
+# airflow variables for Snowflake configuration
+snowflake_conn_id = Variable.get("SNOWFLAKE_CONN_ID", default_var="snowflake_default")
+snowflake_database = Variable.get("SNOWFLAKE_DATABASE", default_var="MY_DATABASE")
+snowflake_schema = Variable.get("SNOWFLAKE_SCHEMA", default_var="PUBLIC")
+snowflake_stage = Variable.get("SNOWFLAKE_STAGE", default_var="MY_STAGE")
+snowflake_table = Variable.get("SNOWFLAKE_TABLE", default_var="MY_TABLE")
+snowflake_file_format = Variable.get("SNOWFLAKE_FILE_FORMAT", default_var="CSV_FORMAT")
+
+scheduled_interval = 5  # in minutes
 
 # logging.basicConfig(level=logging.INFO)
 # logger = logging.getLogger("airflow_ingest_dag")
@@ -35,8 +44,9 @@ default_args = {
 def ingest_s3_new_files():
 
     @task()
-    def get_last_run_time(data_interval_start=None):
-        return data_interval_start.subtract(minutes=scheduled_interval)      # to return the last run time
+    def get_last_run_time(prev_start_date_success=None):
+        # i can try this prev_start_date_success 
+        return prev_start_date_success    # to return the last run time
 
     @task()
     def list_new_files(last_run_time: datetime) -> list:
