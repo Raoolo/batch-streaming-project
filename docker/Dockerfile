@@ -1,4 +1,4 @@
-FROM python:3.13.5-slim
+FROM python:3.11-slim
 WORKDIR /app    
 COPY stream_simulator/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
